@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Open House Itinerary</title>
+<meta name="theme-color" content="#16281C">
+<meta name="description" content="Schedule, locations and map for the open house.">
+
+<script>
+/* ==========================================================================
+   EDIT EVERYTHING IN THIS BLOCK. Nothing below it needs to be touched.
+   Anything left as "" shows up as an orange ADD THIS chip on the page
+   while EDIT_MODE is true. Set EDIT_MODE to false before you go live.
+   ========================================================================== */
+
+const EDIT_MODE = true;
+
+const CONFIG = {
+  eventName:  "Open House",
+  orgName:    "Overdevest Nurseries",                       // e.g. "Willow Creek Nursery"
+  dateISO:    "2026-08-26",             // YYYY-MM-DD. Drives the live "Right now" clock.
+  dateLabel:  "Wednesday, August 26",
+  venue:      "",                       // intentionally blank — orgName already prints above the title
+  address:    "578 Bowentown Rd, Bridgeton NJ 08302",                       // full address, shown under Good to know
+  mapsUrl:    "",                       // not needed — guests are already on site
+
+  contactName:  "",                     // not needed — guests already know who to ask
+  contactPhone: "",                     // blank = no call button rendered
+  wifiNetwork:  "",                     // no guest wi-fi listed — blank hides the line
+  wifiPassword: "",
+
+  // Short practical lines. Add or delete freely. Each string becomes one bulleted
+  // row under "Good to know". Empty strings render as blank rows, so keep the
+  // array empty until there is real copy to put in it.
+  // Parked for later — layout still undecided:
+  //   "Restrooms are behind the food tent."
+  //   "Parking: enter off the main road."
+  //   "Closed-toe shoes recommended. Bring a hat and sunscreen."
+  goodToKnow: [],
+
+  // ---- THE SCHEDULE -------------------------------------------------------
+  // start / end   24-hour clock, "HH:MM"
+  // title         short. It is set in condensed caps on the page.
+  // location      where it happens — shows as a chip
+  // details       a sentence or two. What it is, what to expect, what to bring.
+  // stops         optional sub-items (used for the tour block)
+  // photo         optional image URL, or leave "" for none
+  // mapsUrl       optional Google Maps link for that specific spot
+  schedule: [
+    {
+      start: "08:30", end: "09:00",
+      title: "Check In",
+      location: "Tractor Barn",
+      details:  "",                     // nothing to add
+      photo: "", mapsUrl: ""
+    },
+    {
+      start: "09:00", end: "11:30",
+      title: "Nursery & Garden Tours and Demos",
+      location: "",                     // e.g. "Starts at the front tent"
+      details:  "",                     // e.g. "Groups rotate through three stations, about 45 minutes each. Follow your color."
+      stops: [
+        { name: "Rose Garden", details: "", photo: "", mapsUrl: "" },
+        { name: "Nursery",     details: "", photo: "", mapsUrl: "" },
+        { name: "Drone Demo",  details: "", photo: "", mapsUrl: "" }
+      ],
+      photo: "", mapsUrl: ""
+    },
+    {
+      start: "11:30", end: "12:00",
+      title: "Display Contest",
+      location: "Greenhouse",
+      details:  "",                     // e.g. "Walk the entries and vote. Ballots at the door, winners announced over lunch."
+      photo: "", mapsUrl: ""
+    },
+    {
+      start: "12:00", end: "13:00",
+      title: "Meet, Greet and Eat",
+      location: "",                     // e.g. "Lawn under the oak, food tent"
+      details:  "",                     // e.g. "Lunch is served. Vegetarian and gluten-free options at the end of the line."
+      photo: "", mapsUrl: ""
+    },
+    {
+      start: "13:00", end: "15:00",
+      title: "New Plants, New Ideas",
+      location: "",                     // e.g. "Head house, then additional nursery blocks"
+      details:  "",                     // e.g. "Short talks on this year's introductions, then open tours of blocks 4 through 9."
+      photo: "", mapsUrl: ""
+    }
+  ],
+
+  // ---- GROUNDS MAP --------------------------------------------------------
+  // Set to false to hide the map section entirely.
+  // To use a photo of your own map instead, put its URL in mapImage.
+  showMap: true,
+  mapImage: "",
+  mapCaption: "Rough layout only. Not to scale."
+};
+
+/* ====================== END OF THE EDITABLE BLOCK ========================= */
+</script>
+
+<style>
+  :root{
+    --glass:#e9f0ea;        /* pale greenhouse white */
+    --glass-deep:#ecebec;
+    --pine:#16281c;         /* text */
+    --leaf:#bdadc4;         /* primary */
+    --leaf-soft:#ecd7f0;
+    --tag:#e2d2e9;          /* plant-tag lavender — reserved for NOW */
+    --flag:#9865a8;         /* flagging tape — alerts and unfilled fields */
+    --slate:#81669b;        /* secondary text */
+    --card:#ffffff;
+    --line:rgba(22,40,28,.14);
+    --shadow:0 1px 0 rgba(22,40,28,.06), 0 6px 18px -10px rgba(22,40,28,.45);
+
+    --display:"Avenir Next Condensed","Roboto Condensed","Arial Narrow","Helvetica Neue",Helvetica,sans-serif;
+    --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,"SF Mono","Roboto Mono",Menlo,Consolas,monospace;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--glass);
+    color:var(--pine);
+    font-family:var(--body);
+    font-size:17px;
+    line-height:1.5;
+    padding-bottom:calc(84px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 18px}
+
+  /* ---------- header ---------- */
+  .masthead{
+    background:var(--pine);
+    color:var(--glass);
+    padding:18px 0 16px;
+    border-bottom:4px solid var(--tag);
+  }
+  .masthead h1{
+    font-family:var(--display);
+    font-size:clamp(30px,9vw,44px);
+    line-height:.95;
+    letter-spacing:.02em;
+    text-transform:uppercase;
+    margin:0;
+    font-weight:700;
+  }
+  .masthead .org{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--tag);
+    margin:0 0 6px;
+  }
+  .masthead .when{
+    font-family:var(--mono);
+    font-size:13px;
+    color:rgba(233,240,234,.8);
+    margin:8px 0 0;
+  }
+
+  /* ---------- right now ---------- */
+  .now-section{padding:22px 0 6px}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--slate);
+    margin:0 0 10px;
+  }
+  .now-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-left:6px solid var(--tag);
+    border-radius:4px;
+    padding:16px 16px 14px;
+    box-shadow:var(--shadow);
+  }
+  .now-card.idle{border-left-color:var(--slate)}
+  .now-time{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--leaf);
+    letter-spacing:.04em;
+    margin:0 0 2px;
+  }
+  .now-title{
+    font-family:var(--display);
+    text-transform:uppercase;
+    font-size:clamp(24px,7vw,32px);
+    line-height:1.02;
+    letter-spacing:.01em;
+    margin:0;
+    font-weight:700;
+  }
+  .now-where{margin:8px 0 0;font-size:15px;color:var(--slate)}
+  .meter{
+    height:8px;
+    background:var(--glass-deep);
+    border-radius:99px;
+    overflow:hidden;
+    margin:14px 0 6px;
+  }
+  .meter span{
+    display:block;height:100%;
+    background:var(--tag);
+    border-radius:99px;
+    transition:width .6s linear;
+  }
+  .meter-label{font-family:var(--mono);font-size:12px;color:var(--slate);margin:0}
+  .up-next{
+    margin:10px 0 0;
+    font-size:14px;
+    color:var(--slate);
+  }
+  .up-next b{color:var(--pine);font-weight:600}
+
+  /* ---------- schedule ---------- */
+  .schedule{padding:26px 0 8px}
+  .rail{position:relative;padding-left:34px}
+  .rail::before{
+    content:"";position:absolute;left:11px;top:6px;bottom:6px;
+    width:2px;background:var(--line);
+  }
+  .block{position:relative;margin:0 0 12px}
+  .block::before{                       /* the stake marker */
+    content:"";position:absolute;left:-28px;top:20px;
+    width:12px;height:12px;border-radius:2px;
+    background:var(--glass);
+    border:2px solid var(--leaf-soft);
+    transform:rotate(45deg);
+  }
+  .block.is-done::before{background:var(--leaf-soft);border-color:var(--leaf-soft)}
+  .block.is-now::before{background:var(--tag);border-color:var(--tag);box-shadow:0 0 0 5px rgba(152,101,168,.28)}
+
+  .tag{
+    width:100%;
+    text-align:left;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:14px 44px 14px 14px;
+    font:inherit;
+    color:inherit;
+    cursor:pointer;
+    position:relative;
+    box-shadow:var(--shadow);
+    display:block;
+  }
+  .block.is-now .tag{
+    border-color:var(--tag);
+    border-left:5px solid var(--tag);
+    padding-left:10px;
+  }
+  .block.is-done .tag{opacity:.55;box-shadow:none}
+  .tag:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
+
+  .tag-time{
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:.03em;
+    color:var(--leaf);
+    display:block;
+    margin-bottom:3px;
+  }
+  .block.is-done .tag-time{color:var(--slate)}
+  .tag-title{
+    font-family:var(--display);
+    text-transform:uppercase;
+    font-size:21px;
+    line-height:1.05;
+    letter-spacing:.01em;
+    font-weight:700;
+    display:block;
+  }
+  .tag-where{
+    display:block;margin-top:5px;
+    font-size:14px;color:var(--slate);
+  }
+  .chev{
+    position:absolute;right:14px;top:50%;
+    width:11px;height:11px;
+    border-right:2px solid var(--slate);
+    border-bottom:2px solid var(--slate);
+    transform:translateY(-70%) rotate(45deg);
+    transition:transform .2s ease;
+  }
+  .tag[aria-expanded="true"] .chev{transform:translateY(-30%) rotate(225deg)}
+
+  .badge{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    padding:3px 7px;
+    border-radius:3px;
+    vertical-align:2px;
+    margin-left:8px;
+  }
+  .badge.now{background:var(--tag);color:var(--pine)}
+  .badge.next{background:var(--leaf);color:#fff}
+
+  .panel{
+    display:none;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-top:0;
+    border-radius:0 0 4px 4px;
+    margin-top:-1px;
+    padding:2px 14px 14px;
+  }
+  .panel.open{display:block}
+  .panel p{margin:12px 0 0;font-size:15.5px}
+  .panel img{width:100%;border-radius:3px;margin-top:12px;display:block}
+
+  .stops{list-style:none;margin:12px 0 0;padding:0}
+  .stops li{
+    border-top:1px solid var(--line);
+    padding:11px 0 2px;
+  }
+  .stop-name{
+    font-family:var(--display);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    font-size:16px;
+    font-weight:700;
+  }
+  .stops p{margin:3px 0 0;font-size:15px;color:var(--slate)}
+
+  .go{
+    display:inline-block;
+    margin-top:12px;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    text-decoration:none;
+    color:var(--leaf);
+    border:1.5px solid var(--leaf);
+    border-radius:3px;
+    padding:8px 12px;
+  }
+  .go:active{background:var(--leaf);color:#fff}
+
+  /* ---------- map ---------- */
+  .map-section{padding:26px 0 8px}
+  .map-frame{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:10px;
+    box-shadow:var(--shadow);
+  }
+  .map-frame svg,.map-frame img{width:100%;height:auto;display:block}
+  .cap{font-family:var(--mono);font-size:11.5px;color:var(--slate);margin:9px 2px 0}
+
+  /* ---------- good to know ---------- */
+  .info{padding:26px 0 34px}
+  .info ul{margin:0;padding:0;list-style:none}
+  .info li{
+    border-top:1px solid var(--line);
+    padding:12px 0;
+    font-size:15.5px;
+  }
+  .info li:last-child{border-bottom:1px solid var(--line)}
+  .calls{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .calls a{
+    flex:1 1 46%;
+    text-align:center;
+    text-decoration:none;
+    background:var(--leaf);
+    color:#fff;
+    font-family:var(--display);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    font-size:17px;
+    padding:14px 10px;
+    border-radius:4px;
+  }
+  .calls a.ghost{background:transparent;color:var(--leaf);border:1.5px solid var(--leaf)}
+
+  /* ---------- sticky jump bar ---------- */
+  .jumpbar{
+    position:fixed;left:0;right:0;bottom:0;
+    background:var(--pine);
+    padding:12px 18px calc(12px + env(safe-area-inset-bottom));
+    display:flex;align-items:center;gap:12px;
+    z-index:20;
+  }
+  .jumpbar .status{
+    flex:1;min-width:0;
+    font-family:var(--mono);
+    font-size:12px;
+    color:rgba(233,240,234,.85);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .jumpbar .status b{color:var(--tag);font-weight:600}
+  .jumpbar button{
+    background:var(--tag);color:var(--pine);
+    border:0;border-radius:4px;
+    font-family:var(--display);text-transform:uppercase;
+    letter-spacing:.06em;font-size:15px;font-weight:700;
+    padding:11px 16px;cursor:pointer;flex:none;
+  }
+  .jumpbar button:focus-visible{outline:3px solid var(--glass);outline-offset:2px}
+
+  /* ---------- edit-mode markers ---------- */
+  .todo{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    background:var(--flag);
+    color:#fff;
+    padding:3px 7px;
+    border-radius:3px;
+  }
+  .editnote{
+    background:var(--flag);color:#fff;
+    font-family:var(--mono);font-size:12.5px;
+    padding:10px 18px;line-height:1.4;
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+  }
+
+  @media print{
+    .jumpbar,.now-section,.editnote{display:none}
+    body{background:#fff;padding:0;font-size:12pt}
+    .panel{display:block!important;border:0;padding:0 0 0 14px}
+    .tag{box-shadow:none;page-break-inside:avoid}
+    .chev{display:none}
+    .masthead{background:#fff;color:#000;border-bottom:2px solid #000}
+    .masthead h1,.masthead .org,.masthead .when{color:#000}
+  }
+</style>
+</head>
+<body>
+
+<div id="editnote"></div>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="org" id="org"></p>
+    <h1 id="event-name">Open House</h1>
+    <p class="when" id="when"></p>
+  </div>
+</header>
+
+<main>
+  <section class="now-section wrap" id="now-section">
+    <p class="eyebrow">Right now</p>
+    <div class="now-card" id="now-card"></div>
+  </section>
+
+  <section class="schedule wrap">
+    <p class="eyebrow">Full schedule — tap any block</p>
+    <div class="rail" id="rail"></div>
+  </section>
+
+  <section class="map-section wrap" id="map-section" hidden>
+    <p class="eyebrow">The grounds</p>
+    <div class="map-frame" id="map-frame"></div>
+    <p class="cap" id="map-cap"></p>
+  </section>
+
+  <section class="info wrap">
+    <p class="eyebrow">Good to know</p>
+    <ul id="info-list"></ul>
+    <div class="calls" id="calls"></div>
+  </section>
+</main>
+
+<div class="jumpbar">
+  <div class="status" id="jump-status"></div>
+  <button type="button" id="jump-btn">Jump to now</button>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  const C = CONFIG;
+  const $  = (s,r) => (r||document).querySelector(s);
+  const el = (t,c,txt)=>{const n=document.createElement(t); if(c)n.className=c; if(txt!=null)n.textContent=txt; return n;};
+  const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  /* A field that hasn't been filled in yet. In edit mode it shouts; live, it just disappears. */
+  function fill(value, hint){
+    if (value) return esc(value);
+    return EDIT_MODE ? '<span class="todo">Add ' + esc(hint) + '</span>' : "";
+  }
+  const has = v => !!v || EDIT_MODE;
+
+  /* ---------- time ---------- */
+  const [Y,M,D] = C.dateISO.split("-").map(Number);
+  const at = hhmm => { const [h,m]=hhmm.split(":").map(Number); return new Date(Y,M-1,D,h,m,0,0); };
+  const fmt = d => {
+    let h=d.getHours(), m=d.getMinutes();
+    const ap = h>=12 ? "pm" : "am";
+    h = h%12 || 12;
+    return h + (m ? ":"+String(m).padStart(2,"0") : "") + ap;
+  };
+  const range = b => fmt(at(b.start)) + "–" + fmt(at(b.end));
+  const mins  = ms => Math.max(0, Math.round(ms/60000));
+  const dur   = n => n>=60 ? Math.floor(n/60)+" hr "+(n%60?(n%60)+" min":"") : n+" min";
+
+  const blocks = C.schedule.map(b => Object.assign({}, b, {startAt: at(b.start), endAt: at(b.end)}));
+
+  function state(now){
+    let current=null, next=null;
+    for (const b of blocks){
+      if (now >= b.startAt && now < b.endAt){ current = b; }
+      if (!next && now < b.startAt){ next = b; }
+    }
+    const first = blocks[0], last = blocks[blocks.length-1];
+    let phase = "during";
+    if (now < first.startAt) phase = "before";
+    else if (now >= last.endAt) phase = "after";
+    return {current, next, phase, first, last};
+  }
+
+  /* ---------- header ---------- */
+  $("#event-name").textContent = C.eventName || "Open House";
+  const org = $("#org");
+  if (C.orgName) org.textContent = C.orgName; else if (EDIT_MODE) org.innerHTML = fill("", "your nursery name");
+  $("#when").innerHTML = [fill(C.dateLabel,"date"), fill(C.venue,"venue")].filter(Boolean).join(" &nbsp;·&nbsp; ");
+
+  /* ---------- schedule ---------- */
+  const rail = $("#rail");
+  blocks.forEach((b,i)=>{
+    const wrapEl = el("div","block");
+    wrapEl.id = "block-"+i;
+
+    const btn = el("button","tag");
+    btn.type = "button";
+    btn.setAttribute("aria-expanded","false");
+    btn.setAttribute("aria-controls","panel-"+i);
+    btn.innerHTML =
+      '<span class="tag-time">'+esc(range(b))+' <span class="dur">· '+dur(mins(b.endAt-b.startAt))+'</span></span>' +
+      '<span class="tag-title">'+esc(b.title)+'<span class="badge" hidden></span></span>' +
+      (has(b.location) ? '<span class="tag-where">'+fill(b.location,"location")+'</span>' : "") +
+      '<span class="chev"></span>';
+
+    const panel = el("div","panel");
+    panel.id = "panel-"+i;
+
+    if (has(b.details)) panel.innerHTML += "<p>"+fill(b.details,"what happens here")+"</p>";
+
+    if (b.stops && b.stops.length){
+      const ul = el("ul","stops");
+      b.stops.forEach(s=>{
+        const li = el("li");
+        li.innerHTML = '<span class="stop-name">'+esc(s.name)+'</span>' +
+                       (has(s.details) ? "<p>"+fill(s.details,"details")+"</p>" : "");
+        if (s.photo){ const im=el("img"); im.src=s.photo; im.alt=s.name; im.loading="lazy"; li.appendChild(im); }
+        if (s.mapsUrl){ const a=el("a","go","Find it on the map"); a.href=s.mapsUrl; a.target="_blank"; a.rel="noopener"; li.appendChild(a); }
+        else if (EDIT_MODE){ li.insertAdjacentHTML("beforeend",'<p>'+fill("","map link")+'</p>'); }
+        ul.appendChild(li);
+      });
+      panel.appendChild(ul);
+    }
+
+    if (b.photo){ const im=el("img"); im.src=b.photo; im.alt=b.title; im.loading="lazy"; panel.appendChild(im); }
+    else if (EDIT_MODE){ panel.insertAdjacentHTML("beforeend",'<p>'+fill("","photo so people recognize the spot")+'</p>'); }
+
+    if (b.mapsUrl){ const a=el("a","go","Get directions"); a.href=b.mapsUrl; a.target="_blank"; a.rel="noopener"; panel.appendChild(a); }
+
+    btn.addEventListener("click", ()=>{
+      const open = panel.classList.toggle("open");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+
+    wrapEl.appendChild(btn);
+    wrapEl.appendChild(panel);
+    rail.appendChild(wrapEl);
+  });
+
+  /* ---------- live tick ---------- */
+  const nowCard = $("#now-card");
+  const jumpStatus = $("#jump-status");
+
+  function tick(){
+    const now = new Date();
+    const s = state(now);
+
+    /* the hero card */
+    if (s.phase === "before"){
+      nowCard.className = "now-card idle";
+      nowCard.innerHTML =
+        '<p class="now-time">Doors at '+esc(fmt(s.first.startAt))+'</p>' +
+        '<h2 class="now-title">Not started yet</h2>' +
+        '<p class="up-next">First up: <b>'+esc(s.first.title)+'</b></p>';
+    } else if (s.phase === "after"){
+      nowCard.className = "now-card idle";
+      nowCard.innerHTML =
+        '<p class="now-time">'+esc(fmt(s.last.endAt))+'</p>' +
+        '<h2 class="now-title">That\u2019s a wrap</h2>' +
+        '<p class="up-next">Thanks for coming out.</p>';
+    } else if (s.current){
+      const total = s.current.endAt - s.current.startAt;
+      const gone  = now - s.current.startAt;
+      const pct   = Math.min(100, Math.max(0, (gone/total)*100));
+      const left  = mins(s.current.endAt - now);
+      nowCard.className = "now-card";
+      nowCard.innerHTML =
+        '<p class="now-time">'+esc(range(s.current))+'</p>' +
+        '<h2 class="now-title">'+esc(s.current.title)+'</h2>' +
+        (has(s.current.location) ? '<p class="now-where">'+fill(s.current.location,"location")+'</p>' : "") +
+        '<div class="meter"><span style="width:'+pct.toFixed(1)+'%"></span></div>' +
+        '<p class="meter-label">'+dur(left)+' left</p>' +
+        (s.next ? '<p class="up-next">Next at '+esc(fmt(s.next.startAt))+': <b>'+esc(s.next.title)+'</b></p>' : "");
+    } else {
+      /* gap between blocks */
+      nowCard.className = "now-card idle";
+      nowCard.innerHTML =
+        '<p class="now-time">Between sessions</p>' +
+        '<h2 class="now-title">Free time</h2>' +
+        (s.next ? '<p class="up-next">Next at '+esc(fmt(s.next.startAt))+': <b>'+esc(s.next.title)+'</b> in '+dur(mins(s.next.startAt-now))+'</p>' : "");
+    }
+
+    /* block states + badges */
+    blocks.forEach((b,i)=>{
+      const node = document.getElementById("block-"+i);
+      const badge = node.querySelector(".badge");
+      node.classList.toggle("is-now",  s.current === b);
+      node.classList.toggle("is-done", now >= b.endAt);
+      badge.hidden = true;
+      badge.className = "badge";
+      if (s.current === b){ badge.hidden=false; badge.classList.add("now"); badge.textContent="Now"; }
+      else if (s.next === b && s.phase !== "after"){ badge.hidden=false; badge.classList.add("next"); badge.textContent="Next"; }
+    });
+
+    /* sticky bar */
+    if (s.current) jumpStatus.innerHTML = "Now: <b>"+esc(s.current.title)+"</b>";
+    else if (s.next) jumpStatus.innerHTML = "Next: <b>"+esc(s.next.title)+"</b> at "+esc(fmt(s.next.startAt));
+    else jumpStatus.textContent = C.dateLabel || "";
+  }
+
+  tick();
+  setInterval(tick, 30000);
+
+  $("#jump-btn").addEventListener("click", ()=>{
+    const s = state(new Date());
+    const target = s.current || s.next || blocks[0];
+    const i = blocks.indexOf(target);
+    const node = document.getElementById("block-"+i);
+    node.scrollIntoView({behavior:"smooth", block:"center"});
+    const btn = node.querySelector(".tag");
+    if (btn.getAttribute("aria-expanded") === "false") btn.click();
+  });
+
+  /* ---------- good to know ---------- */
+  const list = $("#info-list");
+  (C.goodToKnow||[]).forEach(t=> list.appendChild(el("li", null, t)));
+  if (C.address || EDIT_MODE){
+    const li = el("li"); li.innerHTML = "<strong>Address:</strong> " + fill(C.address,"street address"); list.appendChild(li);
+  }
+  if (C.wifiNetwork){
+    const li = el("li");
+    li.innerHTML = "<strong>Wi-Fi:</strong> " + esc(C.wifiNetwork) + (C.wifiPassword ? " · password " + esc(C.wifiPassword) : "");
+    list.appendChild(li);
+  }
+
+  const calls = $("#calls");
+  if (C.contactPhone){
+    const a = el("a", null, "Call " + (C.contactName || "us"));
+    a.href = "tel:" + C.contactPhone.replace(/[^0-9+]/g,"");
+    calls.appendChild(a);
+  }
+  if (C.mapsUrl){
+    const a = el("a","ghost","Directions here");
+    a.href = C.mapsUrl; a.target="_blank"; a.rel="noopener";
+    calls.appendChild(a);
+  }
+
+  /* ---------- map ---------- */
+  if (C.showMap){
+    const sec = $("#map-section"); sec.hidden = false;
+    const frame = $("#map-frame");
+    if (C.mapImage){
+      const im = el("img"); im.src = C.mapImage; im.alt = "Map of the grounds"; frame.appendChild(im);
+    } else {
+      frame.innerHTML = siteMapSVG();
+    }
+    $("#map-cap").textContent = C.mapCaption || "";
+  }
+
+  /* ---------- edit-mode banner ---------- */
+  if (EDIT_MODE){
+    $("#editnote").innerHTML =
+      '<div class="editnote">EDIT MODE — orange chips mark what still needs filling in. ' +
+      'Open this file in a text editor, edit the CONFIG block at the top, then set EDIT_MODE to false before printing the QR code.</div>';
+  }
+})();
+
+/* --------------------------------------------------------------------------
+   The grounds map. Move the shapes and rename the labels to match your
+   property, or drop a photo of your own map into CONFIG.mapImage instead.
+   -------------------------------------------------------------------------- */
+function siteMapSVG(){ return `
+<svg viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Map of the grounds">
+  <style>
+    .zone{fill:#e9f0ea;stroke:#2e6b3e;stroke-width:2}
+    .soft{fill:#f5f9f5;stroke:#a8bdae;stroke-width:1.5}
+    .lbl{font-family:"Avenir Next Condensed","Roboto Condensed","Arial Narrow",sans-serif;
+         font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;fill:#16281c}
+    .sub{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;fill:#5b6b5f}
+    .path{fill:none;stroke:#c9d6cc;stroke-width:12;stroke-linecap:round}
+    .row{stroke:#4b8b5c;stroke-width:2;opacity:.55}
+  </style>
+
+  <!-- paths -->
+  <path class="path" d="M90 350 L90 250 L300 250 L300 120 L470 120"/>
+  <path class="path" d="M300 250 L470 250 L470 330"/>
+
+  <!-- parking -->
+  <rect class="soft" x="30" y="320" width="130" height="72" rx="3"/>
+  <text class="lbl" x="42" y="348">Parking</text>
+  <text class="sub" x="42" y="366">Enter off the main road</text>
+
+  <!-- check in -->
+  <rect class="zone" x="40" y="238" width="112" height="58" rx="3" fill="#e2d2e9" stroke="#16281c"/>
+  <text class="lbl" x="52" y="264">Check In</text>
+  <text class="sub" x="52" y="281">Tractor Barn</text>
+
+  <!-- greenhouse -->
+  <rect class="zone" x="200" y="60" width="150" height="86" rx="3"/>
+  <path d="M200 60 L275 32 L350 60" fill="none" stroke="#2e6b3e" stroke-width="2"/>
+  <line class="row" x1="222" y1="66" x2="222" y2="140"/>
+  <line class="row" x1="252" y1="66" x2="252" y2="140"/>
+  <line class="row" x1="282" y1="66" x2="282" y2="140"/>
+  <line class="row" x1="312" y1="66" x2="312" y2="140"/>
+  <text class="lbl" x="212" y="122">Greenhouse</text>
+
+  <!-- rose garden -->
+  <circle class="zone" cx="500" cy="105" r="52"/>
+  <circle cx="500" cy="105" r="26" fill="none" stroke="#4b8b5c" stroke-width="1.5"/>
+  <text class="lbl" x="461" y="180">Rose Garden</text>
+
+  <!-- nursery blocks -->
+  <rect class="zone" x="200" y="196" width="150" height="96" rx="3"/>
+  <line class="row" x1="208" y1="212" x2="342" y2="212"/>
+  <line class="row" x1="208" y1="230" x2="342" y2="230"/>
+  <line class="row" x1="208" y1="248" x2="342" y2="248" stroke="none"/>
+  <line class="row" x1="208" y1="266" x2="342" y2="266"/>
+  <line class="row" x1="208" y1="282" x2="342" y2="282"/>
+  <text class="lbl" x="212" y="254">Nursery Blocks</text>
+
+  <!-- drone / demo field -->
+  <rect x="418" y="238" width="152" height="96" rx="3" fill="#f5f9f5" stroke="#e2571f" stroke-width="2" stroke-dasharray="7 5"/>
+  <text class="lbl" x="430" y="284">Demo Field</text>
+  <text class="sub" x="430" y="301">Drone flights — stay behind the line</text>
+
+  <!-- food -->
+  <rect class="soft" x="200" y="330" width="150" height="62" rx="3"/>
+  <path d="M200 330 L275 306 L350 330" fill="none" stroke="#a8bdae" stroke-width="1.5"/>
+  <text class="lbl" x="212" y="360">Food Tent</text>
+  <text class="sub" x="212" y="377">Restrooms behind</text>
+</svg>`; }
+</script>
+</body>
+</html>
