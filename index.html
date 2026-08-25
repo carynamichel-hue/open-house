@@ -387,6 +387,17 @@ const CONFIG = {
   .calls a.ghost{background:transparent;color:var(--leaf);border:1.5px solid var(--leaf)}
 
   /* ---------- sticky jump bar ---------- */
+  /* the way across to the plant tool — quiet, and last on the page */
+  .crosslink{padding:0 0 96px}
+  .crosslink a{
+    display:block;text-decoration:none;color:var(--pine);
+    background:var(--card);border:1.5px solid var(--leaf);border-radius:12px;
+    padding:14px 16px;box-shadow:var(--shadow);
+  }
+  .crosslink a:active{background:var(--leaf-soft)}
+  .crosslink b{display:block;font-family:var(--display);font-size:19px;letter-spacing:.4px}
+  .crosslink span{display:block;color:var(--slate);font-size:13.5px;margin-top:3px}
+
   .jumpbar{
     position:fixed;left:0;right:0;bottom:0;
     background:var(--pine);
@@ -477,6 +488,16 @@ const CONFIG = {
     <p class="eyebrow">Good to know</p>
     <ul id="info-list"></ul>
     <div class="calls" id="calls"></div>
+  </section>
+
+  <!-- Across to the plant tool. A plain path, not a full URL: both pages sit
+       on the same host, so this keeps working if the site ever moves. The
+       extra bottom margin clears the fixed "Jump to now" bar. -->
+  <section class="wrap crosslink">
+    <a href="/plantpicks/">
+      <b>New Plant Selections 2027</b>
+      <span>Follow along, rate the plants and keep your own notes</span>
+    </a>
   </section>
 </main>
 
