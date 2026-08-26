@@ -101,6 +101,11 @@ const CONFIG = {
       title: "New Idea Session",
       location: "Tractor Barn",
       details:  "Gather with fellow IGCs and talk shop. What do you want to brag about? What could have been executed better? Get and give inspiration.",
+      stops: [
+        { name: "Our New Plants for 2027",
+          details: "We'll walk you through everything new we're growing next year. Follow along on your phone — every plant, with a photo, and room to rate them and keep your own notes as we go.",
+          photo: "", mapsUrl: "" }
+      ],
       photo: "", mapsUrl: ""
     }
   ],
@@ -259,16 +264,19 @@ const CONFIG = {
   .block.is-done::before{background:var(--leaf-soft);border-color:var(--leaf-soft)}
   .block.is-now::before{background:var(--tag);border-color:var(--tag);box-shadow:0 0 0 5px rgba(152,101,168,.28)}
 
+  /* the header of a block. No longer a control — see the note where it is
+     built. The rounded corners are only at the TOP now, because the panel
+     below it is always there and the two read as one card. */
   .tag{
     width:100%;
     text-align:left;
     background:var(--card);
     border:1px solid var(--line);
-    border-radius:4px;
-    padding:14px 44px 14px 14px;
+    border-bottom:0;
+    border-radius:4px 4px 0 0;
+    padding:14px 14px 12px;
     font:inherit;
     color:inherit;
-    cursor:pointer;
     position:relative;
     box-shadow:var(--shadow);
     display:block;
@@ -278,18 +286,35 @@ const CONFIG = {
     border-left:5px solid var(--tag);
     padding-left:10px;
   }
+  .block.is-now .panel{border-color:var(--tag);border-left:5px solid var(--tag);padding-left:10px}
   .block.is-done .tag{opacity:.55;box-shadow:none}
+  .block.is-done .panel{opacity:.55;box-shadow:none}
   .tag:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 
+  /* ⚑ THE TIME IS THE POINT (Caryn, 2026-08-26). Someone glancing at this
+     between conversations is looking for "what is happening now" and "when is
+     the next thing" — not for the name of the block. It was 12.5px in the pale
+     lavender, which is quieter than the location line underneath it. Now it is
+     the loudest small thing on the card: bigger, bolder, and in the ink. The
+     duration stays quiet beside it — it is context, not the answer. */
   .tag-time{
     font-family:var(--mono);
-    font-size:12.5px;
-    letter-spacing:.03em;
-    color:var(--leaf);
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:.01em;
+    color:var(--pine);
     display:block;
-    margin-bottom:3px;
+    margin-bottom:5px;
   }
+  .tag-time .dur{
+    font-weight:400;
+    font-size:13px;
+    color:var(--slate);
+    letter-spacing:.03em;
+  }
+  .block.is-now .tag-time{color:var(--flag)}
   .block.is-done .tag-time{color:var(--slate)}
+  .block.is-done .tag-time .dur{color:var(--slate)}
   .tag-title{
     font-family:var(--display);
     text-transform:uppercase;
@@ -303,15 +328,8 @@ const CONFIG = {
     display:block;margin-top:5px;
     font-size:14px;color:var(--slate);
   }
-  .chev{
-    position:absolute;right:14px;top:50%;
-    width:11px;height:11px;
-    border-right:2px solid var(--slate);
-    border-bottom:2px solid var(--slate);
-    transform:translateY(-70%) rotate(45deg);
-    transition:transform .2s ease;
-  }
-  .tag[aria-expanded="true"] .chev{transform:translateY(-30%) rotate(225deg)}
+  /* the expand chevron and its rules are gone with the dropdown — nothing on
+     the page collapses, so an arrow pointing at nothing would be a lie */
 
   .badge{
     display:inline-block;
@@ -327,32 +345,40 @@ const CONFIG = {
   .badge.now{background:var(--tag);color:var(--pine)}
   .badge.next{background:var(--leaf);color:#fff}
 
+  /* always open — there is no dropdown any more */
   .panel{
-    display:none;
+    display:block;
     background:var(--card);
     border:1px solid var(--line);
     border-top:0;
     border-radius:0 0 4px 4px;
-    margin-top:-1px;
-    padding:2px 14px 14px;
+    box-shadow:var(--shadow);
+    padding:0 14px 14px;
   }
-  .panel.open{display:block}
-  .panel p{margin:12px 0 0;font-size:15.5px}
+  .panel > p{margin:10px 0 0}
+  .panel p{font-size:15.5px;line-height:1.45;color:var(--pine)}
   .panel img{width:100%;border-radius:3px;margin-top:12px;display:block}
 
-  .stops{list-style:none;margin:12px 0 0;padding:0}
+  .stops{list-style:none;margin:10px 0 0;padding:0}
   .stops li{
     border-top:1px solid var(--line);
     padding:11px 0 2px;
   }
+  .stops li:first-child{border-top:0;padding-top:2px}
   .stop-name{
     font-family:var(--display);
     text-transform:uppercase;
     letter-spacing:.04em;
     font-size:16px;
     font-weight:700;
+    display:block;
+    margin-bottom:3px;
   }
-  .stops p{margin:3px 0 0;font-size:15px;color:var(--slate)}
+  /* ⚑ SAME TEXT, SAME LOOK (Caryn, 2026-08-26). A stop's description was
+     15px in the grey while a block's was 15.5px in the ink, so the Rose Garden
+     and the Drone Demo read as footnotes next to Lunch. They are the same kind
+     of sentence and they now share one rule. */
+  .stops p{margin:0;font-size:15.5px;line-height:1.45;color:var(--pine)}
 
   .go{
     display:inline-block;
@@ -467,9 +493,9 @@ const CONFIG = {
   @media print{
     .jumpbar,.now-section,.editnote{display:none}
     body{background:#fff;padding:0;font-size:12pt}
-    .panel{display:block!important;border:0;padding:0 0 0 14px}
-    .tag{box-shadow:none;page-break-inside:avoid}
-    .chev{display:none}
+    .panel{border:0;box-shadow:none;padding:0 0 0 14px}
+    .tag{box-shadow:none;border:0;page-break-inside:avoid}
+    .block{page-break-inside:avoid}
     .masthead{background:#fff;color:#000;border-bottom:2px solid #000}
     .masthead h1,.masthead .org,.masthead .when{color:#000}
   }
@@ -494,7 +520,10 @@ const CONFIG = {
   </section>
 
   <section class="schedule wrap">
-    <p class="eyebrow">Full schedule — tap any block</p>
+    <!-- said "tap any block" while the blocks were dropdowns. They are not any
+         more, and an instruction to tap something that does nothing is worse
+         than no instruction at all. -->
+    <p class="eyebrow">Full schedule</p>
     <div class="rail" id="rail"></div>
   </section>
 
@@ -581,15 +610,17 @@ const CONFIG = {
     const wrapEl = el("div","block");
     wrapEl.id = "block-"+i;
 
-    const btn = el("button","tag");
-    btn.type = "button";
-    btn.setAttribute("aria-expanded","false");
-    btn.setAttribute("aria-controls","panel-"+i);
+    /* ⚑ A HEADING, NOT A BUTTON (Caryn, 2026-08-26). Everything under it is
+       always on screen now, so there is nothing to expand — and a button that
+       does nothing is worse than no button: it still takes keyboard focus and
+       still announces itself as pressable to a screen reader. The whole
+       schedule reads top to bottom, which is what someone walking round with
+       one hand full actually wants. */
+    const btn = el("div","tag");
     btn.innerHTML =
       '<span class="tag-time">'+esc(range(b))+' <span class="dur">· '+dur(mins(b.endAt-b.startAt))+'</span></span>' +
       '<span class="tag-title">'+esc(b.title)+'<span class="badge" hidden></span></span>' +
-      (has(b.location) ? '<span class="tag-where">'+fill(b.location,"location")+'</span>' : "") +
-      '<span class="chev"></span>';
+      (has(b.location) ? '<span class="tag-where">'+fill(b.location,"location")+'</span>' : "");
 
     const panel = el("div","panel");
     panel.id = "panel-"+i;
@@ -615,10 +646,7 @@ const CONFIG = {
 
     if (b.mapsUrl){ const a=el("a","go","Get directions"); a.href=b.mapsUrl; a.target="_blank"; a.rel="noopener"; panel.appendChild(a); }
 
-    btn.addEventListener("click", ()=>{
-      const open = panel.classList.toggle("open");
-      btn.setAttribute("aria-expanded", open ? "true" : "false");
-    });
+    /* no click handler: nothing collapses any more */
 
     wrapEl.appendChild(btn);
     wrapEl.appendChild(panel);
@@ -694,9 +722,8 @@ const CONFIG = {
     const target = s.current || s.next || blocks[0];
     const i = blocks.indexOf(target);
     const node = document.getElementById("block-"+i);
+    /* nothing to expand any more — scrolling to it IS arriving at it */
     node.scrollIntoView({behavior:"smooth", block:"center"});
-    const btn = node.querySelector(".tag");
-    if (btn.getAttribute("aria-expanded") === "false") btn.click();
   });
 
   /* ---------- good to know ---------- */
