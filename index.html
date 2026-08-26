@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Open House Itinerary</title>
 <meta name="theme-color" content="#16281C">
-<meta name="description" content="Schedule, locations and map for the open house.">
+<meta name="description" content="Schedule and locations for the Overdevest Nurseries open house.">
 
 <script>
 /* ==========================================================================
@@ -14,7 +14,11 @@
    while EDIT_MODE is true. Set EDIT_MODE to false before you go live.
    ========================================================================== */
 
-const EDIT_MODE = true;
+/* ⚑ OFF as of 2026-08-26 — the schedule is real now. While this was true, every
+   blank field printed an orange "ADD THIS" chip, which is a working note to
+   whoever is filling the page in and is not something a visitor should ever
+   see. Turn it back on while editing; turn it off before the QR code goes up. */
+const EDIT_MODE = false;
 
 const CONFIG = {
   eventName:  "Open House",
@@ -37,7 +41,10 @@ const CONFIG = {
   //   "Restrooms are behind the food tent."
   //   "Parking: enter off the main road."
   //   "Closed-toe shoes recommended. Bring a hat and sunscreen."
-  goodToKnow: ["Have a question? Ask an employee in yellow"],
+  goodToKnow: [
+    "See a flamingo? Check it out — everyone knows flamingos flock near all the interesting plants.",
+    "Have a question? Ask an employee in yellow."
+  ],
 
   // ---- THE SCHEDULE -------------------------------------------------------
   // start / end   24-hour clock, "HH:MM"
@@ -52,40 +59,48 @@ const CONFIG = {
       start: "08:30", end: "09:00",
       title: "Check In",
       location: "Tractor Barn",
-      details:  "",                     // nothing to add
+      details:  "Stop over after arrival to get your goodies & name tag.",
       photo: "", mapsUrl: ""
     },
     {
       start: "09:00", end: "11:00",
-      title: "Nursery & Garden Tours and Demos",
-      location: "",                     // e.g. "Starts at the front tent"
-      details:  "",                     // e.g. "Groups rotate through three stations, about 45 minutes each. Follow your color."
+      title: "Nursery & Garden Tours",
+      // no single location: the three things below happen in three places, and
+      // each one says where it is rather than the block claiming one spot
+      location: "",
+      details:  "",
       stops: [
-        { name: "Rose Garden", details: "", photo: "", mapsUrl: "" },
-        { name: "Nursery",     details: "", photo: "", mapsUrl: "" },
-        { name: "Drone Demo",  details: "", photo: "", mapsUrl: "" }
+        { name: "Rose Garden",
+          details: "Hang out with Rebecca Koraytem of David Austin Roses in our Trial Rose Garden.",
+          photo: "", mapsUrl: "" },
+        { name: "Nursery Tours",
+          details: "Leave from the Tractor Barn at 9:00 and 10:00. Hop on a wagon and get a tour of our nursery!",
+          photo: "", mapsUrl: "" },
+        { name: "Drone Demo — Tractor Barn",
+          details: "Flights at 9:30 and 10:30. Get a bird's eye view.",
+          photo: "", mapsUrl: "" }
       ],
       photo: "", mapsUrl: ""
     },
     {
       start: "11:00", end: "12:00",
       title: "Display Contest",
-      location: "Greenhouse",
-      details:  "",                     // e.g. "Walk the entries and vote. Ballots at the door, winners announced over lunch."
+      location: "Loading Dock",
+      details:  "Bring the creativity! We've set up a chopped-style display contest. Cash prize for the winning team!",
       photo: "", mapsUrl: ""
     },
     {
       start: "12:00", end: "13:00",
-      title: "Meet, Greet and Eat",
-      location: "",                     // e.g. "Lawn under the oak, food tent"
-      details:  "",                     // e.g. "Lunch is served. Vegetarian and gluten-free options at the end of the line."
+      title: "Meet, Greet & Eat",
+      location: "Tractor Barn",
+      details:  "Lunch catered by a local BBQ pro — come for the knowledge, stay for the flavor explosion.",
       photo: "", mapsUrl: ""
     },
     {
       start: "13:00", end: "15:00",
-      title: "New Plants, New Ideas",
-      location: "",                     // e.g. "Head house, then additional nursery blocks"
-      details:  "",                     // e.g. "Short talks on this year's introductions, then open tours of blocks 4 through 9."
+      title: "New Idea Session",
+      location: "Tractor Barn",
+      details:  "Gather with fellow IGCs and talk shop. What do you want to brag about? What could have been executed better? Get and give inspiration.",
       photo: "", mapsUrl: ""
     }
   ],
@@ -93,7 +108,12 @@ const CONFIG = {
   // ---- GROUNDS MAP --------------------------------------------------------
   // Set to false to hide the map section entirely.
   // To use a photo of your own map instead, put its URL in mapImage.
-  showMap: true,
+  //
+  // ⚑ OFF, Caryn 2026-08-26: there are no colour groups to map any more, so a
+  // map of them would be a page telling people to look for something that does
+  // not exist. Every stop names its own location instead. The PlantPicks
+  // cross-link was reworded to match — it used to promise a map.
+  showMap: false,
   mapImage: "",           // put a photo/scan of a real map here to replace the blank canvas
   mapCaption: ""          // blank while the map itself is blank
 };
