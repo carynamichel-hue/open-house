@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Open House Itinerary</title>
-<meta name="theme-color" content="#16281C">
+<meta name="theme-color" content="#241A2E">
 <meta name="description" content="Schedule and locations for the Overdevest Nurseries open house.">
 
 <script>
@@ -127,18 +127,30 @@ const CONFIG = {
 </script>
 
 <style>
+  /* ⚑ THE HANDOUT'S PURPLES (Caryn, 2026-08-26: "keep the purple theme and
+     make it cute"). These are the exact values PlantPicks uses, because the
+     two pages link to each other and a guest moves between them in one visit —
+     they should read as one thing, not two.
+     The ink was a deep GREEN and the page a neutral tan; matching the body
+     text by making it all near-black is what prompted this. Body copy is now
+     --p-deep, a purple dark enough to read in daylight (about 9:1 on white)
+     but unmistakably purple. */
   :root{
-    --glass:#efe9df;        /* light neutral tan */
-    --glass-deep:#e0d8c9;   /* deeper tan — meter track */
-    --pine:#16281c;         /* text */
-    --leaf:#bdadc4;         /* primary */
+    --glass:#f5f0fa;        /* soft lavender page wash (was a neutral tan) */
+    --glass-deep:#e7dcf0;   /* deeper wash — meter track */
+    --pine:#241a2e;         /* purple-black — the strongest ink */
+    --p:#7b4e9e;            /* the handout's brand purple */
+    --p-deep:#5e3a79;       /* body copy on white */
+    --p-mid:#9b7bba;        /* dots, rules, quiet marks */
+    --p-soft:#c9b4dc;       /* hairlines */
+    --leaf:#9b7bba;         /* primary — buttons and outlines */
     --leaf-soft:#ecd7f0;
     --tag:#e2d2e9;          /* plant-tag lavender — reserved for NOW */
-    --flag:#9865a8;         /* flagging tape — alerts and unfilled fields */
-    --slate:#81669b;        /* secondary text */
+    --flag:#7b4e9e;         /* flagging tape — alerts and unfilled fields */
+    --slate:#6b6076;        /* secondary text */
     --card:#ffffff;
-    --line:rgba(22,40,28,.14);
-    --shadow:0 1px 0 rgba(22,40,28,.06), 0 6px 18px -10px rgba(22,40,28,.45);
+    --line:#e4dcec;
+    --shadow:0 1px 0 rgba(36,26,46,.05), 0 6px 18px -10px rgba(36,26,46,.40);
 
     --display:"Avenir Next Condensed","Roboto Condensed","Arial Narrow","Helvetica Neue",Helvetica,sans-serif;
     --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -208,10 +220,13 @@ const CONFIG = {
     box-shadow:var(--shadow);
   }
   .now-card.idle{border-left-color:var(--slate)}
+  /* ⚑ --leaf is 3.5:1 on white — fine for a border, not for words. Every TEXT
+     use of it moved to --p (6.1:1); the borders and fills keep --leaf. This
+     one is read outdoors, in sun, at 13px. */
   .now-time{
     font-family:var(--mono);
     font-size:13px;
-    color:var(--leaf);
+    color:var(--p);
     letter-spacing:.04em;
     margin:0 0 2px;
   }
@@ -273,7 +288,7 @@ const CONFIG = {
     background:var(--card);
     border:1px solid var(--line);
     border-bottom:0;
-    border-radius:4px 4px 0 0;
+    border-radius:10px 10px 0 0;
     padding:14px 14px 12px;
     font:inherit;
     color:inherit;
@@ -302,7 +317,7 @@ const CONFIG = {
     font-size:16px;
     font-weight:700;
     letter-spacing:.01em;
-    color:var(--pine);
+    color:var(--p);
     display:block;
     margin-bottom:5px;
   }
@@ -343,7 +358,7 @@ const CONFIG = {
     margin-left:8px;
   }
   .badge.now{background:var(--tag);color:var(--pine)}
-  .badge.next{background:var(--leaf);color:#fff}
+  .badge.next{background:var(--p);color:#fff}
 
   /* always open — there is no dropdown any more */
   .panel{
@@ -351,20 +366,31 @@ const CONFIG = {
     background:var(--card);
     border:1px solid var(--line);
     border-top:0;
-    border-radius:0 0 4px 4px;
+    border-radius:0 0 10px 10px;
     box-shadow:var(--shadow);
     padding:0 14px 14px;
   }
   .panel > p{margin:10px 0 0}
-  .panel p{font-size:15.5px;line-height:1.45;color:var(--pine)}
+  /* ⚑ SAME TEXT, SAME LOOK, AND STILL PURPLE (Caryn, 2026-08-26). A stop's
+     description was 15px grey while a block's was 15.5px, so the Rose Garden
+     read as a footnote next to Lunch. Matching them by making both near-black
+     drained the page, so they match in --p-deep instead: one rule, one colour,
+     and the colour is the handout's. */
+  .panel p, .stops p{font-size:15.5px;line-height:1.45;color:var(--p-deep)}
   .panel img{width:100%;border-radius:3px;margin-top:12px;display:block}
 
-  .stops{list-style:none;margin:10px 0 0;padding:0}
-  .stops li{
-    border-top:1px solid var(--line);
-    padding:11px 0 2px;
+  /* ⚑ THE SUB-ITEMS HANG OFF THEIR BLOCK (Caryn, 2026-08-26: make it clearer
+     they fall under the larger heading). Three things say so at once, because
+     one was not enough: they are INDENTED, a lavender rule runs down the left
+     of the whole group tying them to it, and each one starts with a dot. */
+  .stops{
+    list-style:none;
+    margin:12px 0 2px;
+    padding:2px 0 2px 16px;
+    border-left:2px solid var(--p-soft);
   }
-  .stops li:first-child{border-top:0;padding-top:2px}
+  .stops li{padding:10px 0 0}
+  .stops li:first-child{padding-top:0}
   .stop-name{
     font-family:var(--display);
     text-transform:uppercase;
@@ -372,13 +398,21 @@ const CONFIG = {
     font-size:16px;
     font-weight:700;
     display:block;
-    margin-bottom:3px;
+    margin-bottom:4px;
+    color:var(--p);
+    position:relative;
   }
-  /* ⚑ SAME TEXT, SAME LOOK (Caryn, 2026-08-26). A stop's description was
-     15px in the grey while a block's was 15.5px in the ink, so the Rose Garden
-     and the Drone Demo read as footnotes next to Lunch. They are the same kind
-     of sentence and they now share one rule. */
-  .stops p{margin:0;font-size:15.5px;line-height:1.45;color:var(--pine)}
+  /* the dot sits OUT in the indent, level with the cap-height of the name, so
+     the name's own left edge stays flush with everything else in the group */
+  .stop-name::before{
+    content:"";
+    position:absolute;
+    left:-23px; top:.5em;
+    width:7px; height:7px;
+    border-radius:50%;
+    background:var(--p-mid);
+    box-shadow:0 0 0 3px var(--card);
+  }
 
   .go{
     display:inline-block;
@@ -388,7 +422,7 @@ const CONFIG = {
     letter-spacing:.08em;
     text-transform:uppercase;
     text-decoration:none;
-    color:var(--leaf);
+    color:var(--p);
     border:1.5px solid var(--leaf);
     border-radius:3px;
     padding:8px 12px;
@@ -430,7 +464,7 @@ const CONFIG = {
     padding:14px 10px;
     border-radius:4px;
   }
-  .calls a.ghost{background:transparent;color:var(--leaf);border:1.5px solid var(--leaf)}
+  .calls a.ghost{background:transparent;color:var(--p);border:1.5px solid var(--leaf)}
 
   /* ---------- sticky jump bar ---------- */
   /* the way across to the plant tool — quiet, and last on the page */
