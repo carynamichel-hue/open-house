@@ -26,7 +26,10 @@ const CONFIG = {
   dateISO:    "2026-08-26",             // YYYY-MM-DD. Drives the live "Right now" clock.
   dateLabel:  "Wednesday, August 26",
   venue:      "",                       // intentionally blank — orgName already prints above the title
-  address:    "578 Bowentown Rd, Bridgeton NJ 08302",                       // full address, shown under Good to know
+  // ⚑ BLANK ON PURPOSE (Caryn, 2026-08-26): everyone reading this is already
+  // standing on the property. An address at the foot of the page is a line
+  // that helps nobody and takes up the last thing they see.
+  address:    "",
   mapsUrl:    "",                       // not needed — guests are already on site
 
   contactName:  "",                     // not needed — guests already know who to ask
@@ -41,9 +44,11 @@ const CONFIG = {
   //   "Restrooms are behind the food tent."
   //   "Parking: enter off the main road."
   //   "Closed-toe shoes recommended. Bring a hat and sunscreen."
+  // Each line is its own little card. Lead with an emoji — it is the whole of
+  // the "cute", it costs nothing, and it gives the eye something to land on.
   goodToKnow: [
-    "See a flamingo? Check it out — everyone knows flamingos flock near all the interesting plants.",
-    "Have a question? Ask an employee in yellow."
+    "🦩 See a flamingo? Check it out — everyone knows flamingos flock near all the interesting plants.",
+    "💛 Have a question? Ask an employee in yellow."
   ],
 
   // ---- THE SCHEDULE -------------------------------------------------------
@@ -100,8 +105,13 @@ const CONFIG = {
       start: "13:00", end: "15:00",
       title: "New Idea Session",
       location: "Tractor Barn",
-      details:  "Gather with fellow IGCs and talk shop. What do you want to brag about? What could have been executed better? Get and give inspiration.",
+      // ⚑ both halves are NAMED. A bare paragraph sitting above a headed stop
+      // read as an orphan — everything under a block has a heading now.
+      details:  "",
       stops: [
+        { name: "Talk Shop",
+          details: "Gather with fellow IGCs. What do you want to brag about? What could have been executed better? Get and give inspiration.",
+          photo: "", mapsUrl: "" },
         { name: "Our New Plants for 2027",
           details: "We'll walk you through everything new we're growing next year. Follow along on your phone — every plant, with a photo, and room to rate them and keep your own notes as we go.",
           photo: "", mapsUrl: "" }
@@ -147,7 +157,11 @@ const CONFIG = {
     --leaf-soft:#ecd7f0;
     --tag:#e2d2e9;          /* plant-tag lavender — reserved for NOW */
     --flag:#7b4e9e;         /* flagging tape — alerts and unfilled fields */
-    --slate:#6b6076;        /* secondary text */
+    /* ⚑ DARKENED 2026-08-26 — Caryn: "the contrast is too low". It was
+       #6b6076, which technically passes AA (5.9:1 on white, 5.3:1 on the page
+       wash) and still reads badly on a phone held outdoors, which is the only
+       place this page is ever read. 8.2:1 / 7.3:1 now — AAA on both. */
+    --slate:#574a63;        /* secondary text */
     --card:#ffffff;
     --line:#e4dcec;
     --shadow:0 1px 0 rgba(36,26,46,.05), 0 6px 18px -10px rgba(36,26,46,.40);
@@ -202,7 +216,7 @@ const CONFIG = {
   }
 
   /* ---------- right now ---------- */
-  .now-section{padding:22px 0 6px}
+  .now-section{padding-top:22px;padding-bottom:6px}
   .eyebrow{
     font-family:var(--mono);
     font-size:11px;
@@ -226,7 +240,9 @@ const CONFIG = {
   .now-time{
     font-family:var(--mono);
     font-size:13px;
-    color:var(--p);
+    /* the brand purple is 6.1:1 — right for a 16px bold time, thin at 13px
+       regular, so this one takes the deeper purple (8.9:1) */
+    color:var(--p-deep);
     letter-spacing:.04em;
     margin:0 0 2px;
   }
@@ -262,7 +278,7 @@ const CONFIG = {
   .up-next b{color:var(--pine);font-weight:600}
 
   /* ---------- schedule ---------- */
-  .schedule{padding:26px 0 8px}
+  .schedule{padding-top:26px;padding-bottom:8px}
   .rail{position:relative;padding-left:34px}
   .rail::before{
     content:"";position:absolute;left:11px;top:6px;bottom:6px;
@@ -430,7 +446,7 @@ const CONFIG = {
   .go:active{background:var(--leaf);color:#fff}
 
   /* ---------- map ---------- */
-  .map-section{padding:26px 0 8px}
+  .map-section{padding-top:26px;padding-bottom:8px}
   .map-frame{
     background:var(--card);
     border:1px solid var(--line);
@@ -442,14 +458,29 @@ const CONFIG = {
   .cap{font-family:var(--mono);font-size:11.5px;color:var(--slate);margin:9px 2px 0}
 
   /* ---------- good to know ---------- */
-  .info{padding:26px 0 34px}
-  .info ul{margin:0;padding:0;list-style:none}
+  .info{padding-top:26px;padding-bottom:34px}
+  /* ⚑ CUTE (Caryn, 2026-08-26). These were rows between hairlines, which read
+     as small print — the flamingo deserves better than small print. Each line
+     is its own soft card now, on a lavender tint, with the leading emoji
+     pulled out into its own column so the text lines up under itself instead
+     of wrapping back under the picture. */
+  .info ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
   .info li{
-    border-top:1px solid var(--line);
-    padding:12px 0;
+    background:var(--card);
+    border:1px solid var(--p-soft);
+    border-radius:14px;
+    padding:13px 15px;
     font-size:15.5px;
+    line-height:1.45;
+    color:var(--pine);
+    box-shadow:var(--shadow);
+    /* the emoji sits in the first column, the words in the second */
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:11px;
+    align-items:start;
   }
-  .info li:last-child{border-bottom:1px solid var(--line)}
+  .info li .emoji{font-size:22px;line-height:1.15}
   .calls{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
   .calls a{
     flex:1 1 46%;
@@ -468,7 +499,7 @@ const CONFIG = {
 
   /* ---------- sticky jump bar ---------- */
   /* the way across to the plant tool — quiet, and last on the page */
-  .crosslink{padding:0 0 96px}
+  .crosslink{padding-bottom:96px}
   .crosslink a{
     display:block;text-decoration:none;color:var(--pine);
     background:var(--card);border:1.5px solid var(--leaf);border-radius:12px;
@@ -518,6 +549,22 @@ const CONFIG = {
     background:var(--flag);color:#fff;
     font-family:var(--mono);font-size:12.5px;
     padding:10px 18px;line-height:1.4;
+  }
+
+  /* ⚑ PHONE WIDTHS (Caryn, 2026-08-26: "too wide on a cell phone, the right
+     side needs more space"). The real culprit was the section padding above —
+     .schedule/.info/.now-section each used the padding SHORTHAND after .wrap,
+     which zeroed the 18px side gutters .wrap had just set, so every card ran
+     hard into both screen edges and the words sat 14px from the right.
+     With the gutters back, the only remaining lopsidedness is the timeline
+     rail, which is decoration and only eats space on the LEFT. On a 390px
+     screen 34px of it is nearly a tenth of the display, so it gives some back
+     — enough to widen the cards without touching the right-hand gap she
+     asked for. */
+  @media (max-width:430px){
+    .rail{padding-left:26px}
+    .block::before{left:-22px;width:10px;height:10px}
+    .rail::before{left:8px}
   }
 
   @media (prefers-reduced-motion:reduce){
@@ -762,14 +809,27 @@ const CONFIG = {
 
   /* ---------- good to know ---------- */
   const list = $("#info-list");
-  (C.goodToKnow||[]).forEach(t=> list.appendChild(el("li", null, t)));
+  /* Each line is a card with the emoji in its own column, so a long line wraps
+     under ITSELF rather than tucking back under the picture. A line that
+     starts with no emoji still gets the column, filled with a quiet dot, or
+     the cards would not line up with each other. */
+  const infoRow = (emoji, html) => {
+    const li = el("li");
+    li.innerHTML = '<span class="emoji">' + emoji + '</span><span>' + html + '</span>';
+    list.appendChild(li);
+    return li;
+  };
+  (C.goodToKnow||[]).forEach((t)=>{
+    const m = String(t).match(/^(\p{Extended_Pictographic}️?)\s*(.*)$/u);
+    if (m) infoRow(esc(m[1]), esc(m[2]));
+    else infoRow("•", esc(t));
+  });
   if (C.address || EDIT_MODE){
-    const li = el("li"); li.innerHTML = "<strong>Address:</strong> " + fill(C.address,"street address"); list.appendChild(li);
+    infoRow("📍", "<strong>Address:</strong> " + fill(C.address,"street address"));
   }
   if (C.wifiNetwork){
-    const li = el("li");
-    li.innerHTML = "<strong>Wi-Fi:</strong> " + esc(C.wifiNetwork) + (C.wifiPassword ? " · password " + esc(C.wifiPassword) : "");
-    list.appendChild(li);
+    infoRow("📶", "<strong>Wi-Fi:</strong> " + esc(C.wifiNetwork)
+      + (C.wifiPassword ? " · password " + esc(C.wifiPassword) : ""));
   }
 
   const calls = $("#calls");
