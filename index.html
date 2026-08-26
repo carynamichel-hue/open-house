@@ -84,8 +84,8 @@ const CONFIG = {
         { name: "Nursery Tours",
           details: "Leave from the Tractor Barn at 9:00 and 10:00. Hop on a wagon and get a tour of our nursery!",
           photo: "", mapsUrl: "" },
-        { name: "Drone Demo — Tractor Barn",
-          details: "Flights at 9:30 and 10:30. Get a bird's eye view.",
+        { name: "Drone Demo",
+          details: "Flights leaving at 9:30am and 10:30am from the Tractor Barn. Get a bird's eye view.",
           photo: "", mapsUrl: "" }
       ],
       photo: "", mapsUrl: ""
@@ -358,9 +358,13 @@ const CONFIG = {
     font-weight:700;
     display:block;
   }
+  /* ⚑ SAME SIZE AS THE BULLET COPY (Caryn, 2026-08-26). The location under a
+     title was 14px slate — smaller than the 15.5px purple sentences in the
+     bulleted stops, so "Tractor Barn" read quieter than the copy around it.
+     It now matches .panel p / .stops p exactly. */
   .tag-where{
     display:block;margin-top:5px;
-    font-size:14px;color:var(--slate);
+    font-size:15.5px;line-height:1.45;color:var(--p-deep);
   }
   /* the expand chevron and its rules are gone with the dropdown — nothing on
      the page collapses, so an arrow pointing at nothing would be a lie */
